@@ -6,7 +6,7 @@ CREATE TABLE `business_demand` (
   `id` int(11) NOT NULL,
   `created_by` int(11) NOT NULL,
   `item_name` varchar(200) NOT NULL,
-  `quantity_per_month` int(5) NOT NULL,
+  `quantity_per_month` int(5) NOT NULL COMMENT 'Ammount needed, per month. in kg. ',
   `description` varchar(1000) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -82,6 +82,21 @@ ALTER TABLE `users`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `unique_contact` (`contact_num`);
 
+
+ALTER TABLE `business_demand`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE `expert_profile`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE `posts`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE `post_replies`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE `production_info`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 ALTER TABLE `users`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
