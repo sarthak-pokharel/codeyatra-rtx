@@ -8,7 +8,8 @@ CREATE TABLE `business_demand` (
   `item_name` varchar(200) NOT NULL,
   `quantity_per_month` int(5) NOT NULL COMMENT 'Ammount needed, per month. in kg. ',
   `description` varchar(1000) NOT NULL,
-  `posted_at` timestamp NOT NULL DEFAULT current_timestamp()
+  `posted_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `district` varchar(100) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE `expert_profile` (
@@ -51,7 +52,8 @@ CREATE TABLE `production_info` (
   `description` varchar(2000) NOT NULL,
   `quantity_per_month` int(11) NOT NULL COMMENT 'in kg',
   `costing_per_month` int(11) NOT NULL COMMENT 'in NPR',
-  `posted_at` timestamp NOT NULL DEFAULT current_timestamp()
+  `posted_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `district` varchar(100) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE `users` (

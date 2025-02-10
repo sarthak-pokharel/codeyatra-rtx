@@ -384,7 +384,8 @@ router.get('/production-info', (req, res) => {
     min_cost,
     max_cost,
     search_term,
-    item_name    // Added new parameter
+    item_name,   
+    district     // Added district parameter
   } = req.query;
 
   let query = `
@@ -420,6 +421,12 @@ router.get('/production-info', (req, res) => {
   if (max_cost) {
     query += ` AND p.costing_per_month <= ?`;
     queryParams.push(parseInt(max_cost));
+  }
+
+  // Added case-insensitive district filter
+  if (district) {
+    query += ` AND LOWER(p.district) LIKE LOWER(?)`;
+    queryParams.push(`%${district}%`);
   }
 
   // Added case-insensitive item name search using LOWER()

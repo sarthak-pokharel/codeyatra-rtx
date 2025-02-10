@@ -20,6 +20,7 @@ export default function ProductionInfo() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
+  const [district, setDistrict] = useState(''); // Add this state
 
   const fetchProductionInfo = async (params = {}) => {
     try {
@@ -42,11 +43,18 @@ export default function ProductionInfo() {
     if (searchTerm) {
       params.search_term = searchTerm;
     }
+    if (district) {
+      params.district = district;
+    }
     fetchProductionInfo(params);
-  }, [searchTerm]);
+  }, [searchTerm, district]); // Add district to dependency array
 
   const handleSearch = (value) => {
     setSearchTerm(value);
+  };
+
+  const handleDistrictChange = (value) => {
+    setDistrict(value);
   };
 
   if (loading) {
@@ -67,6 +75,7 @@ export default function ProductionInfo() {
     );
   }
 
+  
   return (
     <Container sx={{ py: 4 }}>
       <Typography variant="h4" gutterBottom>
@@ -76,6 +85,8 @@ export default function ProductionInfo() {
       <ProductionSearchFilters 
         searchTerm={searchTerm}
         onSearch={handleSearch}
+        district={district}
+        onDistrictChange={handleDistrictChange}
       />
 
       <Grid container spacing={2}>
@@ -129,23 +140,44 @@ export default function ProductionInfo() {
                   </Box>
                 </Box>
                 <Box
-                  sx={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    mt: 1,
-                    pt: 1,
-                    borderTop: '1px solid',
-                    borderColor: 'divider'
-                  }}
-                >
-                  <Typography variant="caption" color="text.secondary">
-                    Posted by: {item.first_name} {item.last_name}
-                  </Typography>
-                  <Typography variant="caption" color="text.secondary" sx={{ ml: 2 }}>
-                    {getRelativeTimeString(item.posted_at)}
-                  </Typography>
-                </Box>
+  sx={{
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    mt: 1,
+    pt: 1,
+    borderTop: '1px solid',
+    borderColor: 'divider'
+  }}
+>
+  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+    <Typography variant="caption" color="text.secondary">
+      Posted by: {item.first_name} {item.last_name}
+    </Typography>
+    {item.district && (
+      <>
+        <Typography variant="caption" color="text.secondary">•</Typography>
+        <Typography 
+          variant="caption" 
+          color="primary"
+          sx={{ 
+            backgroundColor: 'primary.50',
+            px: 1,
+            py: 0.25,
+            borderRadius: 1,
+            fontSize: '0.75rem',
+            textTransform: 'uppercase'
+          }}
+        >
+          {item.district}
+        </Typography>
+      </>
+    )}
+  </Box>
+  <Typography variant="caption" color="text.secondary">
+    {getRelativeTimeString(item.posted_at)}
+  </Typography>
+</Box>
               </CardContent>
               </Card>
             </Grid>
