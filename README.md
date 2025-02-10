@@ -28,17 +28,45 @@ Agrifusion aligns with:
 - **Authentication**: JWT-based authentication
 
 
+
 ## 🚀 Setup Instructions
 
 1. Clone the repository
-2. Add your OpenAI API key to `.env` file in the server directory:
+
+2. Install and configure MySQL Server:
+   - Download MySQL Server from [official website](https://dev.mysql.com/downloads/mysql/)
+   - Install MySQL Server and MySQL Workbench
+   - Create a new database named `agrifusion`:
+   ```sql
+   CREATE DATABASE agrifusion;```
+
+3. Configure database connection  in `.env` file:
+```
+DB_HOST=localhost
+DB_USER=your_username
+DB_PASSWORD=your_password
+DB_NAME=agrifusion
+```
+4. Execute the database schema:
+   - Open MySQL terminal or MySQL Workbench or Phpmyadmin admin panel
+   - Connect to the `agrifusion` database:
+   ```sql
+   USE agrifusion;
+   ```
+   - Execute the schema file:
+   `source path/to/dbschema.sql;`
+
+5. Add your OpenAI API key to `.env` file in the server directory:
 
 ```OPENAI_API_KEY=your_api_key_here```
 
-3. Run the following commands to start the application:
+6. Run the following commands to start the application:
 ```bash
 cd client-v2
 npm run build
 cd ..\server
 npm start
 ```
+
+
+
