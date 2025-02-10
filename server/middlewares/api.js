@@ -449,70 +449,7 @@ router.get('/production-info/:id', (req, res) => {
 
 
 
-router.get('/business-demands', (req, res) => {
-  const {
-    created_by,
-    min_quantity,
-    max_quantity,
-    search_term,
-    item_name
-  } = req.query;
 
-  let query = `
-    SELECT b.*, u.first_name, u.last_name,
-           DATE_FORMAT(b.posted_at, '%Y-%m-%d %H:%i:%s') as posted_at
-    FROM business_demand b
-    JOIN users u ON b.created_by = u.id
-    WHERE 1=1
-  `;
-  const queryParams = [];
-
-  // Add filters if provided
-  if (created_by) {
-    query += ` AND b.created_by = ?`;
-    queryParams.push(created_by);
-  }
-
-  if (min_quantity) {
-    query += ` AND b.quantity_per_month >= ?`;
-    queryParams.push(parseInt(min_quantity));
-  }
-
-  if (max_quantity) {
-    query += ` AND b.quantity_per_month <= ?`;
-    queryParams.push(parseInt(max_quantity));
-  }
-
-  // Case-insensitive item name search
-  if (item_name) {
-    query += ` AND LOWER(b.item_name) LIKE LOWER(?)`;
-    queryParams.push(`%${item_name}%`);
-  }
-
-  // Case-insensitive general search across item_name and description
-  if (search_term) {
-    query += ` AND (LOWER(b.item_name) LIKE LOWER(?) OR LOWER(b.description) LIKE LOWER(?))`;
-    const searchPattern = `%${search_term}%`;
-    queryParams.push(searchPattern, searchPattern);
-  }
-
-  // Add ordering by most recent first
-  query += ` ORDER BY b.id DESC`;
-
-  connection.query(query, queryParams, (err, results) => {
-    if (err) {
-      console.error('Error fetching business demands:', err);
-      return res.status(500).json({
-        error: 'Internal Server Error'
-      });
-    }
-    res.json({
-      message: 'Business demands retrieved successfully',
-      count: results.length,
-      data: results
-    });
-  });
-});
 
 router.get('/business-demands/:id', (req, res) => {
   const { id } = req.params;
@@ -551,68 +488,76 @@ router.get('/business-demands/:id', (req, res) => {
   });
 });
 
-router.post('/new-business-demand', verifyToken, (req, res) => {
-  const { item_name, quantity_per_month, description, district } = req.body;
-  const created_by = req.userId; // Extracted from the verified token
-console.log({district});
-  // Input validation
-  if (!created_by || !item_name || !quantity_per_month || !description || !district) {
-    return res.status(400).json({
-      error: 'All fields (item_name, quantity_per_month, description, district) are required'
-    });
-  }
+router.get('/business-demands', (req, res) => {
+  const {
+    created_by,
+    min_quantity,
+    max_quantity,
+    search_term,
+    item_name,
+    district  // Added district parameter
+  } = req.query;
 
-  // Validate string lengths according to schema
-  if (item_name.length > 200) {
-    return res.status(400).json({
-      error: 'Item name must not exceed 200 characters'
-    });
-  }
-
-  if (description.length > 1000) {
-    return res.status(400).json({
-      error: 'Description must not exceed 1000 characters'
-    });
-  }
-
-  if (district.length > 100) {
-    return res.status(400).json({
-      error: 'District must not exceed 100 characters'
-    });
-  }
-
-  // Validate quantity is a positive integer
-  if (!Number.isInteger(quantity_per_month) || quantity_per_month <= 0) {
-    return res.status(400).json({
-      error: 'Quantity per month must be a positive integer'
-    });
-  }
-
-  const query = `
-    INSERT INTO business_demand (created_by, item_name, quantity_per_month, description, district)
-    VALUES (?, ?, ?, ?, ?)
+  let query = `
+    SELECT b.*, u.first_name, u.last_name,
+           DATE_FORMAT(b.posted_at, '%Y-%m-%d %H:%i:%s') as posted_at
+    FROM business_demand b
+    JOIN users u ON b.created_by = u.id
+    WHERE 1=1
   `;
+  const queryParams = [];
 
-  connection.query(query,
-    [created_by, item_name, quantity_per_month, description, district],
-    (err, results) => {
-      if (err) {
-        if (err.code === 'ER_NO_REFERENCED_ROW_2') {
-          return res.status(400).json({
-            error: 'Invalid user ID provided'
-          });
-        }
-        console.error('Error creating business demand:', err);
-        return res.status(500).json({
-          error: 'Internal Server Error'
-        });
-      }
-      res.status(201).json({
-        message: 'Business demand created successfully',
-        demandId: results.insertId
+  // Add filters if provided
+  if (created_by) {
+    query += ` AND b.created_by = ?`;
+    queryParams.push(created_by);
+  }
+
+  if (min_quantity) {
+    query += ` AND b.quantity_per_month >= ?`;
+    queryParams.push(parseInt(min_quantity));
+  }
+
+  if (max_quantity) {
+    query += ` AND b.quantity_per_month <= ?`;
+    queryParams.push(parseInt(max_quantity));
+  }
+
+  // Added case-insensitive district filter
+  if (district) {
+    query += ` AND LOWER(b.district) LIKE LOWER(?)`;
+    queryParams.push(`%${district}%`);
+  }
+
+  // Case-insensitive item name search
+  if (item_name) {
+    query += ` AND LOWER(b.item_name) LIKE LOWER(?)`;
+    queryParams.push(`%${item_name}%`);
+  }
+
+  // Case-insensitive general search across item_name and description
+  if (search_term) {
+    query += ` AND (LOWER(b.item_name) LIKE LOWER(?) OR LOWER(b.description) LIKE LOWER(?))`;
+    const searchPattern = `%${search_term}%`;
+    queryParams.push(searchPattern, searchPattern);
+  }
+
+  // Add ordering by most recent first
+  query += ` ORDER BY b.id DESC`;
+
+  connection.query(query, queryParams, (err, results) => {
+    if (err) {
+      console.error('Error fetching business demands:', err);
+      return res.status(500).json({
+        error: 'Internal Server Error'
       });
     }
-  );
+    res.json({
+      message: 'Business demands retrieved successfully',
+      count: results.length,
+      data: results
+    });
+  });
 });
 
 router.get('/expert-profiles', (req, res) => {
@@ -814,13 +759,14 @@ router.get('/posts', (req, res) => {
   });
 });
 
-router.post('/create-post-reply', (req, res) => {
-  const { of_post, replied_by, content } = req.body;
+router.post('/create-post-reply', verifyToken, (req, res) => {
+  const { of_post, content } = req.body;
+  const replied_by = req.userId; // Get user ID from the verified token
 
   // Input validation
-  if (!of_post || !replied_by || !content) {
+  if (!of_post || !content) {
     return res.status(400).json({
-      error: 'All fields (of_post, replied_by, content) are required'
+      error: 'All fields (of_post, content) are required'
     });
   }
 
@@ -831,16 +777,10 @@ router.post('/create-post-reply', (req, res) => {
     });
   }
 
-  // Validate that post_id and user_id are positive integers
+  // Validate that post_id is a positive integer
   if (!Number.isInteger(of_post) || of_post <= 0) {
     return res.status(400).json({
       error: 'Invalid post ID'
-    });
-  }
-
-  if (!Number.isInteger(replied_by) || replied_by <= 0) {
-    return res.status(400).json({
-      error: 'Invalid user ID'
     });
   }
 
@@ -856,7 +796,7 @@ router.post('/create-post-reply', (req, res) => {
         // Handle foreign key constraint violations
         if (err.code === 'ER_NO_REFERENCED_ROW_2') {
           return res.status(400).json({
-            error: 'Invalid post ID or user ID provided'
+            error: 'Invalid post ID provided'
           });
         }
         console.error('Error creating reply:', err);
@@ -1215,7 +1155,7 @@ router.post('/verify-otp', async (req, res) => {
     const token = jwt.sign(
       { id: user.id, first_name: user.first_name, last_name: user.last_name },
       process.env.JWT_SECRET,
-      { expiresIn: '1h' }
+      { expiresIn: '1y' }
     );
     res.json({
       message: 'OTP verified successfully',

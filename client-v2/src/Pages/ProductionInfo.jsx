@@ -106,18 +106,19 @@ export default function ProductionInfo() {
           </Grid>
         ) : (
           productionData.map((item) => (
-            <Grid item xs={12} key={item.id}>
-              <Card
-                sx={{
-                  cursor: 'pointer',
-                  '&:hover': {
-                    boxShadow: 3,
-                    borderLeft: '4px solid #1976d2',
-                    transition: 'all 0.2s ease-in-out'
-                  }
-                }}
-                onClick={() => handleCardClick(item.id)}
-              >
+            <Grid item xs={12} key={item.id} sx={{ width: '100%' }}>
+    <Card
+      sx={{
+        cursor: 'pointer',
+        width: '100%', // Added width
+        '&:hover': {
+          boxShadow: 3,
+          borderLeft: '4px solid #1976d2',
+          transition: 'all 0.2s ease-in-out'
+        }
+      }}
+      onClick={() => handleCardClick(item.id)}
+    >
                 <CardContent sx={{ p: 2 }}>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                   <Box>

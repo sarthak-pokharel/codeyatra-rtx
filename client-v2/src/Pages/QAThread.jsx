@@ -114,7 +114,7 @@ export function QAThread() {
                 },
                 body: JSON.stringify({
                     of_post: Number(id),
-                    replied_by: 1, // TODO: Replace with actual user ID from auth
+                    token: localStorage.getItem("token"), 
                     content: replyContent.trim()
                 }),
             });
