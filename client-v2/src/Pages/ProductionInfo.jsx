@@ -11,31 +11,43 @@ import {
 import { useNavigate } from 'react-router-dom';
 import { getRelativeTimeString } from './toolkit';
 import { productionInfoRoute } from '../apiRoutes';
+import ProductionSearchFilters from './ProductionSearchFilter';
+// import ProductionSearchFilters from '../components/ProductionSearchFilters';
 
 export default function ProductionInfo() {
   const navigate = useNavigate();
   const [productionData, setProductionData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
+
+  const fetchProductionInfo = async (params = {}) => {
+    try {
+      const queryParams = new URLSearchParams(params);
+      const response = await fetch(`${productionInfoRoute}?${queryParams}`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch data');
+      }
+      const data = await response.json();
+      setProductionData(data.data);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchProductionInfo = async () => {
-      try {
-        const response = await fetch(`${productionInfoRoute}`);
-        if (!response.ok) {
-          throw new Error('Failed to fetch data');
-        }
-        const data = await response.json();
-        setProductionData(data.data);
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
+    const params = {};
+    if (searchTerm) {
+      params.search_term = searchTerm;
+    }
+    fetchProductionInfo(params);
+  }, [searchTerm]);
 
-    fetchProductionInfo();
-  }, []);
+  const handleSearch = (value) => {
+    setSearchTerm(value);
+  };
 
   if (loading) {
     return (
@@ -54,31 +66,40 @@ export default function ProductionInfo() {
       </Container>
     );
   }
-  const handleCardClick = (id) => {
-    navigate(`/dashboard/production-posts/${id}`);
-  };
-
 
   return (
     <Container sx={{ py: 4 }}>
       <Typography variant="h4" gutterBottom>
         Production Information
       </Typography>
+      
+      <ProductionSearchFilters 
+        searchTerm={searchTerm}
+        onSearch={handleSearch}
+      />
+
       <Grid container spacing={2}>
-        {productionData.map((item) => (
-          <Grid item xs={12} key={item.id}>
-            <Card
-              sx={{
-                cursor: 'pointer',
-                '&:hover': {
-                  boxShadow: 3,
-                  borderLeft: '4px solid #1976d2',
-                  transition: 'all 0.2s ease-in-out'
-                }
-              }}
-              onClick={() => handleCardClick(item.id)}
-            >
-              <CardContent sx={{ p: 2 }}>
+        {productionData.length === 0 ? (
+          <Grid item xs={12}>
+            <Typography variant="body1" color="text.secondary" align="center">
+              No production information found.
+            </Typography>
+          </Grid>
+        ) : (
+          productionData.map((item) => (
+            <Grid item xs={12} key={item.id}>
+              <Card
+                sx={{
+                  cursor: 'pointer',
+                  '&:hover': {
+                    boxShadow: 3,
+                    borderLeft: '4px solid #1976d2',
+                    transition: 'all 0.2s ease-in-out'
+                  }
+                }}
+                onClick={() => handleCardClick(item.id)}
+              >
+                <CardContent sx={{ p: 2 }}>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                   <Box>
                     <Typography variant="h6" sx={{ fontSize: '1.1rem', mb: 0.5 }}>
@@ -126,9 +147,10 @@ export default function ProductionInfo() {
                   </Typography>
                 </Box>
               </CardContent>
-            </Card>
-          </Grid>
-        ))}
+              </Card>
+            </Grid>
+          ))
+        )}
       </Grid>
     </Container>
   );
