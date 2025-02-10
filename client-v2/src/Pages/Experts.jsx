@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { _hostname } from '../apiRoutes';
 import ExpertForm from './ExpertCreationForm';
-import { Container, Typography, List, ListItem, ListItemText, CircularProgress, Alert, Fab, Card, CardContent, CardActions, Button } from '@mui/material';
+import { Container, Typography, List, CircularProgress, Alert, Fab, Card, CardContent, CardActions, Button } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import { styled } from '@mui/system';
 
@@ -31,12 +31,6 @@ export default function Experts() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showForm, setShowForm] = useState(false);
-  const [formData, setFormData] = useState({
-    title: '',
-    services: '',
-    description: '',
-    token: localStorage.getItem('token')
-  });
 
   useEffect(() => {
     const fetchExperts = async () => {
@@ -52,34 +46,6 @@ export default function Experts() {
 
     fetchExperts();
   }, []);
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      await axios.post(_hostname + '/api/new-expert-profile', formData, {
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      });
-      setShowForm(false);
-      setFormData({
-        title: '',
-        services: '',
-        description: '',
-        token: localStorage.getItem('token')
-      });
-      // Refresh the experts list
-      const response = await axios.get(_hostname + '/api/expert-profiles');
-      setExperts(response.data.data);
-    } catch (err) {
-      setError(err.message);
-    }
-  };
 
   if (loading) {
     return <CircularProgress />;
@@ -125,12 +91,7 @@ export default function Experts() {
         <AddIcon />
       </StyledFab>
       {showForm && (
-        <ExpertForm
-          formData={formData}
-          handleInputChange={handleInputChange}
-          handleSubmit={handleSubmit}
-          setShowForm={setShowForm}
-        />
+        <ExpertForm setShowForm={setShowForm} />
       )}
     </Container>
   );

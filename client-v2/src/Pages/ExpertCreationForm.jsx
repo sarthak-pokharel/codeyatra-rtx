@@ -1,7 +1,16 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Box, Button, TextField, Typography, Modal } from '@mui/material';
+import axios from 'axios';
+import { _hostname } from '../apiRoutes';
 
-export default function ExpertForm({ formData, handleInputChange, handleSubmit, setShowForm }) {
+export default function ExpertForm() {
+  const [formData, setFormData] = useState({
+    title: '',
+    services: '',
+    description: ''
+  });
+  const [showForm, setShowForm] = useState(true);
+
   const style = {
     position: 'absolute',
     top: '50%',
@@ -13,9 +22,33 @@ export default function ExpertForm({ formData, handleInputChange, handleSubmit, 
     p: 4,
   };
 
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      token: localStorage.getItem('token'),
+      [name]: value
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post(_hostname+'/api/new-expert-profile', formData, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`
+        }
+      });
+      console.log('Expert profile created successfully:', response.data);
+      setShowForm(false);
+    } catch (error) {
+      console.error('Error creating expert profile:', error);
+    }
+  };
+
   return (
     <Modal
-      open={true}
+      open={showForm}
       onClose={() => setShowForm(false)}
       aria-labelledby="modal-title"
       aria-describedby="modal-description"
