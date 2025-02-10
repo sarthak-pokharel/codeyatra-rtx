@@ -12,3 +12,5 @@ export let createPostRoute = `${_hostname}/api/create-new-post`;
 export let createPostReplyRoute = `${_hostname}/api/create-post-reply`;
 
 export let postReplyFetchRoute = `${_hostname}/api/post-replies`;
+
+export let businessDemandsStatsRoute =`${_hostname}/api/business-demands-stats`;

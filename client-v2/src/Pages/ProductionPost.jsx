@@ -9,9 +9,10 @@ import {
   Box,
   Button,
   Divider,
-  Fab
+  Grid
 } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import ContactMailIcon from '@mui/icons-material/ContactMail';
 import { _hostname } from '../apiRoutes';
 
 export default function ProductionPost() {
@@ -68,7 +69,7 @@ export default function ProductionPost() {
         Back to List
       </Button>
 
-      <Card sx={{ mb: 4 }}>
+      <Card sx={{ mb: 4, position: 'relative', border: '1px solid #ccc', borderRadius: 2 }}>
         <CardContent>
           <Typography variant="h4" gutterBottom>
             {post.item_label}
@@ -99,10 +100,27 @@ export default function ProductionPost() {
           <Typography variant="h6" color="text.secondary" gutterBottom>
             Producer Information
           </Typography>
-          <Typography variant="body1">
-            {post.first_name} {post.last_name}
-          </Typography>
+          <Grid container spacing={2}>
+            <Grid item xs={12} sm={6}>
+              <Typography variant="body1">
+                <strong>First Name:</strong> {post.first_name}
+              </Typography>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <Typography variant="body1">
+                <strong>Last Name:</strong> {post.last_name}
+              </Typography>
+            </Grid>
+          </Grid>
         </CardContent>
+        <Button
+          variant="contained"
+          color="primary"
+          startIcon={<ContactMailIcon />}
+          sx={{ position: 'absolute', bottom: 16, right: 16, backgroundColor: '#1976d2', '&:hover': { backgroundColor: '#1565c0' } }}
+        >
+          Make Contract
+        </Button>
       </Card>
       
     </Container>

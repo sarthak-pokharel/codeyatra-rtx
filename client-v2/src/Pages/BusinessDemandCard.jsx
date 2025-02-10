@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { QuestionAnswer, Person, Schedule, Add } from '@mui/icons-material';
-import { 
+import {
   Box,
   Card,
   CardContent,
@@ -71,13 +71,14 @@ export default function BusinessDemandPost() {
         Back to List
       </Button>
 
+
       <Card sx={{ mb: 4 }}>
         <CardContent>
           <Typography variant="h4" gutterBottom>
             {post.item_name}
           </Typography>
           <Divider sx={{ my: 2 }} />
-          
+
           <Typography variant="h6" color="text.secondary" gutterBottom>
             Demand Details
           </Typography>
@@ -92,7 +93,7 @@ export default function BusinessDemandPost() {
           </Box>
 
           <Divider sx={{ my: 2 }} />
-          
+
           <Typography variant="h6" color="text.secondary" gutterBottom>
             Posted By
           </Typography>
@@ -100,8 +101,19 @@ export default function BusinessDemandPost() {
             {post.first_name} {post.last_name}
           </Typography>
         </CardContent>
+        <Box display="flex" justifyContent="flex-end" sx={{ p: 2 }}>
+          <Button
+            variant="contained"
+            color="primary"
+            startIcon={<Person />}
+            sx={{ borderRadius: '50px' }}
+          >
+            Contact Industry
+          </Button>
+        </Box>
       </Card>
-      
+
+
     </Container>
   );
 }

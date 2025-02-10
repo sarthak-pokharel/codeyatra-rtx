@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { _hostname } from './apiRoutes';
-import { Container, Typography, CircularProgress, Alert, Button, TextField, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, List, ListItem, ListItemText, ListItemSecondaryAction } from '@mui/material';
+import { Container, Typography, CircularProgress, Alert, Button, TextField, Dialog, 
+    DialogActions, DialogContent, DialogTitle, IconButton, List, ListItem, 
+    ListItemText, ListItemSecondaryAction, Paper } from '@mui/material';
 import { Edit } from '@mui/icons-material';
 
 const Profile = () => {
@@ -87,12 +89,13 @@ const Profile = () => {
 
     return (
         <Container maxWidth="sm">
-            <Typography variant="h4" gutterBottom>
-                Profile
-            </Typography>
-            {profile ? (
-                <List>
-                    {Object.keys(profile).map((key) => (
+            <Paper elevation={3} sx={{ p: 3, mt: 3 }}>
+                <Typography variant="h4" gutterBottom>
+                    Profile
+                </Typography>
+                {profile ? (
+                    <List>
+                        {Object.keys(profile).map((key) => (
                         <ListItem key={key}>
                         <ListItemText
                             primary={
@@ -115,11 +118,12 @@ const Profile = () => {
                         )}
                     </ListItem>
                     ))}
-                </List>
-            ) : (
-                <Alert severity="info">No profile data available</Alert>
-            )}
-
+                    </List>
+                ) : (
+                    <Alert severity="info">No profile data available</Alert>
+                )}
+            </Paper>
+    
             <Dialog open={!!editField} onClose={() => setEditField(null)}>
                 <DialogTitle>Edit {editField}</DialogTitle>
                 <DialogContent>
