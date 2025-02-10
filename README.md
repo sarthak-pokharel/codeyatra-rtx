@@ -25,9 +25,6 @@ Agrifusion aligns with:
 - **Frontend**: HTML, CSS, JavaScript (React)
 - **Backend**: Node.js, Express
 - **Database**:My SQL
-<<<<<<< HEAD
-- **Authentication**: JWT-based authentication
-=======
 - **Authentication**: JWT-based authentication
 
 
@@ -45,4 +42,3 @@ npm run build
 cd ..\server
 npm start
 ```
->>>>>>> temp
