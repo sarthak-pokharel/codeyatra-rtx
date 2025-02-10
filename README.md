@@ -61,7 +61,11 @@ DB_NAME=agrifusion
 
 ```OPENAI_API_KEY=your_api_key_here```
 
-6. Run the following commands to start the application:
+6. Add your Sparrow SMS token API key to `.env` file in the server directory:
+
+```SPARROW_SMS_TOKEN=your_api_key_here```
+
+7. Run the following commands to start the application:
 ```bash
 cd client-v2
 npm run build
