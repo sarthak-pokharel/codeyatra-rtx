@@ -38,7 +38,8 @@ Agrifusion aligns with:
    - Install MySQL Server and MySQL Workbench
    - Create a new database named `agrifusion`:
    ```sql
-   CREATE DATABASE agrifusion;```
+   CREATE DATABASE agrifusion;
+   ```
 
 3. Configure database connection  in `.env` file:
 ```
