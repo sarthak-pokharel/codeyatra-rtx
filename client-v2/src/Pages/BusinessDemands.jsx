@@ -18,6 +18,7 @@ import AddIcon from '@mui/icons-material/Add';
 import { districts } from './districts';
 import { MenuItem, Select, InputLabel, FormControl } from '@mui/material';
 import BusinessDemandsStats from './BusinessStatsPanel';
+import useLocalStorageState from 'use-local-storage-state';
 
 export default function BusinessDemands() {
   const navigate = useNavigate();
@@ -28,6 +29,10 @@ export default function BusinessDemands() {
   const [minQuantity, setMinQuantity] = useState('');
   const [maxQuantity, setMaxQuantity] = useState('');
   const [district, setDistrict] = useState('');
+
+  const [mode, setMode] = useLocalStorageState('mode', {
+    defaultValue:"farmer"
+  });
 
   const [searchTrigger, setSearchTrigger] = useState(0);
 
@@ -229,7 +234,7 @@ export default function BusinessDemands() {
           <BusinessDemandsStats />
         </Grid>
       </Grid>
-      <Fab
+      {mode=="businessman"&&<Fab
         color="primary"
         aria-label="add"
         onClick={() => navigate('/dashboard/create-new-businessdemand')}
@@ -244,7 +249,7 @@ export default function BusinessDemands() {
         }}
       >
         <AddIcon />
-      </Fab>
+      </Fab>}
     </Container>
   );
 }

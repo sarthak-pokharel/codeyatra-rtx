@@ -447,7 +447,49 @@ router.get('/production-info/:id', (req, res) => {
   });
 });
 
+router.get('/business-demands-stats', (req, res) => {
+  const { limit = 10 } = req.query; // Default to top 10 items
 
+  const query = `
+    SELECT 
+      b.item_name,
+      COUNT(DISTINCT b.id) as demand_count,
+      SUM(b.quantity_per_month) as total_monthly_demand,
+      GROUP_CONCAT(DISTINCT b.district) as demanding_districts,
+      MIN(b.quantity_per_month) as min_quantity_demanded,
+      MAX(b.quantity_per_month) as max_quantity_demanded
+    FROM business_demand b
+    GROUP BY b.item_name
+    ORDER BY total_monthly_demand DESC
+    LIMIT ?
+  `;
+
+  connection.query(query, [parseInt(limit)], (err, results) => {
+    if (err) {
+      console.error('Error generating business demands stats:', err);
+      return res.status(500).json({
+        error: 'Internal Server Error'
+      });
+    }
+
+    // Process results to add ranking and format data
+    const statsWithRanking = results.map((item, index) => ({
+      rank: index + 1,
+      item_name: item.item_name,
+      total_monthly_demand: item.total_monthly_demand,
+      demand_count: item.demand_count,
+      min_quantity: item.min_quantity_demanded,
+      max_quantity: item.max_quantity_demanded,
+      demanding_districts: item.demanding_districts.split(',').filter((v, i, a) => a.indexOf(v) === i) // Remove duplicates
+    }));
+
+    res.json({
+      message: 'Business demands statistics retrieved successfully',
+      count: results.length,
+      data: statsWithRanking
+    });
+  });
+});
 
 
 
@@ -669,6 +711,8 @@ router.get('/production-stats', (req, res) => {
     });
   });
 });
+
+
 
 router.post('/create-new-post', (req, res) => {
   const { created_by, title, description, keywords } = req.body;

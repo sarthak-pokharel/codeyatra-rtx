@@ -14,6 +14,7 @@ import {
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ContactMailIcon from '@mui/icons-material/ContactMail';
 import { _hostname } from '../apiRoutes';
+import { getRelativeTimeString } from './toolkit'; // Import the function
 
 export default function ProductionPost() {
   const { id } = useParams();
@@ -101,14 +102,19 @@ export default function ProductionPost() {
             Producer Information
           </Typography>
           <Grid container spacing={2}>
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12}>
               <Typography variant="body1">
-                <strong>First Name:</strong> {post.first_name}
+                <strong>Name:</strong> {post.first_name} {post.last_name}
               </Typography>
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12}>
               <Typography variant="body1">
-                <strong>Last Name:</strong> {post.last_name}
+                <strong>Published District:</strong> {post.district}
+              </Typography>
+            </Grid>
+            <Grid item xs={12}>
+              <Typography variant="body1">
+                <strong>Posted:</strong> {getRelativeTimeString(post.posted_at)}
               </Typography>
             </Grid>
           </Grid>

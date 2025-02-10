@@ -5,6 +5,7 @@ import ExpertForm from './ExpertCreationForm';
 import { Container, Typography, List, CircularProgress, Alert, Fab, Card, CardContent, CardActions, Button } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import { styled } from '@mui/system';
+import useLocalStorageState from 'use-local-storage-state';
 
 const StyledCard = styled(Card)({
   marginBottom: '20px',
@@ -31,6 +32,9 @@ export default function Experts() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showForm, setShowForm] = useState(false);
+  const [mode, setMode] = useLocalStorageState('mode', {
+    defaultValue:"farmer"
+  });
 
   useEffect(() => {
     const fetchExperts = async () => {
@@ -83,13 +87,13 @@ export default function Experts() {
           </StyledCard>
         ))}
       </List>
-      <StyledFab
+      {mode=="expert" && <StyledFab
         color="primary"
         aria-label="add"
         onClick={() => setShowForm(true)}
       >
         <AddIcon />
-      </StyledFab>
+      </StyledFab>}
       {showForm && (
         <ExpertForm setShowForm={setShowForm} />
       )}

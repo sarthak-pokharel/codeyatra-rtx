@@ -13,11 +13,17 @@
   "license": "ISC",
   "type": "module",
   "dependencies": {
+    "@langchain/community": "^0.3.29",
+    "@langchain/openai": "^0.4.3",
     "body-parser": "^1.20.3",
     "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "json-parser": "^3.1.2",
+    "jsonwebtoken": "^9.0.2",
+    "langchain": "^0.3.15",
     "mysql": "^2.18.1",
-    "node-fetch": "^3.3.2"
+    "node-fetch": "^3.3.2",
+    "socket.io": "^4.8.1"
   }
 }

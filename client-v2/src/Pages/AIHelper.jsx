@@ -77,7 +77,7 @@ function AIHelper() {
     return (
         <ThemeProvider theme={theme}>
             <Box sx={{
-                height: '100vh',
+                height: '80vh',
                 display: 'flex',
                 flexDirection: 'column',
                 bgcolor: 'grey.100'

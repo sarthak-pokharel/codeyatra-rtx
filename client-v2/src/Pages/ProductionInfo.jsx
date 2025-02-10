@@ -17,6 +17,7 @@ import ProductionSearchFilters from './ProductionSearchFilter';
 // import ProductionSearchFilters from '../components/ProductionSearchFilters';
 import AddIcon from '@mui/icons-material/Add';
 import ProductionStatsPanel from './ProductionStatsPanel';
+import useLocalStorageState from 'use-local-storage-state';
 
 export default function ProductionInfo() {
   const navigate = useNavigate();
@@ -26,6 +27,9 @@ export default function ProductionInfo() {
   const [searchTerm, setSearchTerm] = useState('');
   const [district, setDistrict] = useState(''); // Add this state
   const [serarchTrigger, setSearchTrigger] = useState(0);
+  const [mode, setMode] = useLocalStorageState('mode', {
+      defaultValue:"farmer"
+    });
 
   const fetchProductionInfo = async (params = {}) => {
     try {
@@ -85,6 +89,7 @@ export default function ProductionInfo() {
 
 
   return (
+    
     <Container sx={{ py: 4 }}>
       <Typography variant="h4" gutterBottom>
         Production Information
@@ -204,7 +209,7 @@ export default function ProductionInfo() {
           </Box>
         </Box>
 
-        <Fab
+        {mode=='farmer'&&<Fab
           color="primary"
           aria-label="add production post"
           onClick={() => navigate('/dashboard/create-new-production-post')}
@@ -215,7 +220,7 @@ export default function ProductionInfo() {
           }}
         >
           <AddIcon />
-        </Fab>
+        </Fab>}
       </Box>
     </Container>
   );
