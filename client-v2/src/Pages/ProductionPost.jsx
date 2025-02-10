@@ -12,7 +12,7 @@ import {
   Fab
 } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import AddIcon from '@mui/icons-material/Add';
+import { _hostname } from '../apiRoutes';
 
 export default function ProductionPost() {
   const { id } = useParams();
@@ -24,7 +24,7 @@ export default function ProductionPost() {
   useEffect(() => {
     const fetchProductionPost = async () => {
       try {
-        const response = await fetch(`http://localhost:5000/api/production-info/${id}`);
+        const response = await fetch(`${_hostname}/api/production-info/${id}`);
         if (!response.ok) {
           throw new Error('Failed to fetch production details');
         }

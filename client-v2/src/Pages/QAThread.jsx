@@ -227,7 +227,7 @@ export function QAThread() {
                         <Typography variant="h5" gutterBottom>
                             {post.title}
                         </Typography>
-                        {post.created_by === 1 && ( // Replace 1 with actual user ID from auth
+                        {post.created_by === JSON.parse(localStorage.getItem("user")).id && ( // Replace 1 with actual user ID from auth
                             <IconButton onClick={handleEditOpen} size="small">
                                 <EditIcon />
                             </IconButton>
@@ -283,7 +283,7 @@ export function QAThread() {
                                 <Typography variant="body1" paragraph>
                                     {reply.content}
                                 </Typography>
-                                {reply.replied_by === 1 && ( // Replace 1 with actual user ID from auth
+                                {reply.replied_by === JSON.parse(localStorage.getItem("user")).id && ( // Replace 1 with actual user ID from auth
                                     <IconButton onClick={() => handleReplyEditOpen(reply)} size="small">
                                         <EditIcon />
                                     </IconButton>

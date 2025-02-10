@@ -16,6 +16,7 @@ import { productionInfoRoute } from '../apiRoutes';
 import ProductionSearchFilters from './ProductionSearchFilter';
 // import ProductionSearchFilters from '../components/ProductionSearchFilters';
 import AddIcon from '@mui/icons-material/Add';
+import ProductionStatsPanel from './ProductionStatsPanel';
 
 export default function ProductionInfo() {
   const navigate = useNavigate();
@@ -82,14 +83,14 @@ export default function ProductionInfo() {
     );
   }
 
-  
+
   return (
     <Container sx={{ py: 4 }}>
       <Typography variant="h4" gutterBottom>
         Production Information
       </Typography>
-      
-      <ProductionSearchFilters 
+
+      <ProductionSearchFilters
         searchTerm={searchTerm}
         onSearch={handleSearch}
         district={district}
@@ -97,114 +98,125 @@ export default function ProductionInfo() {
         setSearchTrigger={setSearchTrigger}
       />
 
-      <Grid container spacing={2}>
-        {productionData.length === 0 ? (
-          <Grid item xs={12}>
-            <Typography variant="body1" color="text.secondary" align="center">
-              No production information found.
-            </Typography>
+      <Box sx={{ display: 'flex', gap: 3 }}>
+        <Box sx={{ display:'flex' }}>
+          <Grid container spacing={2}>
+            {productionData.length === 0 ? (
+              <Grid item xs={12}>
+                <Typography variant="body1" color="text.secondary" align="center">
+                  No production information found.
+                </Typography>
+              </Grid>
+            ) : (
+              productionData.map((item) => (
+                <Grid item xs={12} key={item.id} sx={{ width: '45%' }}>
+                  <Card
+                    sx={{
+                      cursor: 'pointer',
+                      width: '100%', // Added width
+                      '&:hover': {
+                        boxShadow: 3,
+                        borderLeft: '4px solid #1976d2',
+                        transition: 'all 0.2s ease-in-out'
+                      },
+                      border: '1px solid grey',
+                      minHeight:'200px'
+                    }}
+                    elevation={0}
+                    onClick={() => handleCardClick(item.id)}
+                  >
+                    <CardContent sx={{ p: 2 }}>
+                      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                        <Box>
+                          <Typography variant="h6" sx={{ fontSize: '1.1rem', mb: 0.5 }}>
+                            {item.item_label}
+                          </Typography>
+                          <Typography
+                            variant="body2"
+                            color="text.secondary"
+                            sx={{
+                              mb: 1,
+                              display: '-webkit-box',
+                              WebkitLineClamp: 2,
+                              WebkitBoxOrient: 'vertical',
+                              overflow: 'hidden'
+                            }}
+                          >
+                            {item.description.substring(0, 50)}...
+                          </Typography>
+                        </Box>
+                        <Box sx={{ textAlign: 'right', minWidth: '150px' }}>
+                          <Typography variant="body2" color="primary" sx={{ fontWeight: 'medium' }}>
+                            NPR {(item.costing_per_month / item.quantity_per_month).toFixed(2)}/kg
+                          </Typography>
+                          <Typography variant="body2" color="text.secondary">
+                            {item.quantity_per_month} kg/month
+                          </Typography>
+                        </Box>
+                      </Box>
+                      <Box
+                        sx={{
+                          display: 'flex',
+                          justifyContent: 'space-between',
+                          alignItems: 'center',
+                          mt: 1,
+                          pt: 1,
+                          borderTop: '1px solid',
+                          borderColor: 'divider'
+                        }}
+                      >
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                          <Typography variant="caption" color="text.secondary">
+                            Posted by: {item.first_name} {item.last_name}
+                          </Typography>
+                          {item.district && (
+                            <>
+                              <Typography variant="caption" color="text.secondary">•</Typography>
+                              <Typography
+                                variant="caption"
+                                color="primary"
+                                sx={{
+                                  backgroundColor: 'primary.50',
+                                  px: 1,
+                                  py: 0.25,
+                                  borderRadius: 1,
+                                  fontSize: '0.75rem',
+                                  textTransform: 'uppercase'
+                                }}
+                              >
+                                {item.district}
+                              </Typography>
+                            </>
+                          )}
+                        </Box>
+                        <Typography variant="caption" color="text.secondary">
+                          {getRelativeTimeString(item.posted_at)}
+                        </Typography>
+                      </Box>
+                    </CardContent>
+                  </Card>
+                </Grid>
+              ))
+            )}
           </Grid>
-        ) : (
-          productionData.map((item) => (
-            <Grid item xs={12} key={item.id} sx={{ width: '100%' }}>
-    <Card
-      sx={{
-        cursor: 'pointer',
-        width: '100%', // Added width
-        '&:hover': {
-          boxShadow: 3,
-          borderLeft: '4px solid #1976d2',
-          transition: 'all 0.2s ease-in-out'
-        }
-      }}
-      onClick={() => handleCardClick(item.id)}
-    >
-                <CardContent sx={{ p: 2 }}>
-                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                  <Box>
-                    <Typography variant="h6" sx={{ fontSize: '1.1rem', mb: 0.5 }}>
-                      {item.item_label}
-                    </Typography>
-                    <Typography
-                      variant="body2"
-                      color="text.secondary"
-                      sx={{
-                        mb: 1,
-                        display: '-webkit-box',
-                        WebkitLineClamp: 2,
-                        WebkitBoxOrient: 'vertical',
-                        overflow: 'hidden'
-                      }}
-                    >
-                      {item.description}
-                    </Typography>
-                  </Box>
-                  <Box sx={{ textAlign: 'right', minWidth: '150px' }}>
-                    <Typography variant="body2" color="primary" sx={{ fontWeight: 'medium' }}>
-                      NPR {(item.costing_per_month / item.quantity_per_month).toFixed(2)}/kg
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      {item.quantity_per_month} kg/month
-                    </Typography>
-                  </Box>
-                </Box>
-                <Box
-  sx={{
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    mt: 1,
-    pt: 1,
-    borderTop: '1px solid',
-    borderColor: 'divider'
-  }}
->
-  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-    <Typography variant="caption" color="text.secondary">
-      Posted by: {item.first_name} {item.last_name}
-    </Typography>
-    {item.district && (
-      <>
-        <Typography variant="caption" color="text.secondary">•</Typography>
-        <Typography 
-          variant="caption" 
+          <Box sx={{ width: 230, flexShrink: 0, display: { xs: 'none', md: 'block' } }}>
+            <ProductionStatsPanel />
+          </Box>
+        </Box>
+
+        <Fab
           color="primary"
-          sx={{ 
-            backgroundColor: 'primary.50',
-            px: 1,
-            py: 0.25,
-            borderRadius: 1,
-            fontSize: '0.75rem',
-            textTransform: 'uppercase'
+          aria-label="add production post"
+          onClick={() => navigate('/dashboard/create-new-production-post')}
+          sx={{
+            position: 'fixed',
+            bottom: 16,
+            right: 16
           }}
         >
-          {item.district}
-        </Typography>
-      </>
-    )}
-  </Box>
-  <Typography variant="caption" color="text.secondary">
-    {getRelativeTimeString(item.posted_at)}
-  </Typography>
-</Box>
-              </CardContent>
-              </Card>
-            </Grid>
-          ))
-        )}
-      </Grid>
-      <Fab
-        color="primary"
-        aria-label="add production post"
-        onClick={() => navigate('/dashboard/create-new-production-post')}
-        sx={{
-          position: 'fixed',
-          bottom: 16,
-          right: 16
-        }}
-      >
-        <AddIcon />
-      </Fab>
+          <AddIcon />
+        </Fab>
+      </Box>
     </Container>
   );
 }

@@ -17,7 +17,8 @@ const Sidebar = () => {
     { text: 'Business Demands', icon: <ExploreIcon />, path: '/dashboard/business-demands' },
     { text: 'Forum', icon: <ExploreIcon />, path: '/dashboard/qa' },
     { text: 'Profile', icon: <AccountCircleIcon />, path: '/dashboard/profile' },
-    { text: 'Experts', icon: <ExploreIcon />, path: '/dashboard/experts-list' }
+    { text: 'Experts', icon: <ExploreIcon />, path: '/dashboard/experts-list' },
+    { text: 'AI Helper', icon: <ExploreIcon />, path: "/dashboard/ai-helper" }
   ];
 
   return (
