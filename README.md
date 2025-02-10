@@ -25,4 +25,24 @@ Agrifusion aligns with:
 - **Frontend**: HTML, CSS, JavaScript (React)
 - **Backend**: Node.js, Express
 - **Database**:My SQL
+<<<<<<< HEAD
 - **Authentication**: JWT-based authentication
+=======
+- **Authentication**: JWT-based authentication
+
+
+## 🚀 Setup Instructions
+
+1. Clone the repository
+2. Add your OpenAI API key to `.env` file in the server directory:
+
+```OPENAI_API_KEY=your_api_key_here```
+
+3. Run the following commands to start the application:
+```bash
+cd client-v2
+npm run build
+cd ..\server
+npm start
+```
+>>>>>>> temp
