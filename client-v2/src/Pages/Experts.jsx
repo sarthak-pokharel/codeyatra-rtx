@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { _hostname } from '../apiRoutes';
 import ExpertForm from './ExpertCreationForm';
+import { Container, Typography, List, ListItem, ListItemText, Button, CircularProgress, Alert, Fab } from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
 
 export default function Experts() {
   const [experts, setExperts] = useState([]);
@@ -45,7 +47,6 @@ export default function Experts() {
       });
       setShowForm(false);
       setFormData({
-        // created_by: '',
         title: '',
         services: '',
         description: '',
@@ -60,44 +61,50 @@ export default function Experts() {
   };
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <CircularProgress />;
   }
 
   if (error) {
-    return <div>Error: {error}</div>;
+    return <Alert severity="error">{error}</Alert>;
   }
 
   return (
-    <div>
-      <h1>Experts Page</h1>
-      <ul>
+    <Container>
+      <Typography variant="h4" gutterBottom>
+        Experts Page
+      </Typography>
+      <List>
         {experts.map((expert) => (
-          <li key={expert.id}>
-            <h2>{expert.title}</h2>
-            <p>{expert.services}</p>
-            <p>{expert.description}</p>
-            <p>Created by: {expert.first_name} {expert.last_name}</p>
-          </li>
+          <ListItem key={expert.id}>
+            <ListItemText
+              primary={expert.title}
+              secondary={
+                <>
+                  <Typography component="span" variant="body2" color="textPrimary">
+                    {expert.services}
+                  </Typography>
+                  <br />
+                  {expert.description}
+                  <br />
+                  Created by: {expert.first_name} {expert.last_name}
+                </>
+              }
+            />
+          </ListItem>
         ))}
-      </ul>
-      <button
+      </List>
+      <Fab
+        color="primary"
+        aria-label="add"
         style={{
           position: 'fixed',
           bottom: '20px',
-          right: '20px',
-          backgroundColor: '#6200ea',
-          color: 'white',
-          borderRadius: '50%',
-          width: '56px',
-          height: '56px',
-          fontSize: '24px',
-          border: 'none',
-          cursor: 'pointer'
+          right: '20px'
         }}
         onClick={() => setShowForm(true)}
       >
-        +
-      </button>
+        <AddIcon />
+      </Fab>
       {showForm && (
         <ExpertForm
           formData={formData}
@@ -106,6 +113,6 @@ export default function Experts() {
           setShowForm={setShowForm}
         />
       )}
-    </div>
+    </Container>
   );
 }
