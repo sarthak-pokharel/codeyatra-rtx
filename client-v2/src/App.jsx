@@ -19,6 +19,9 @@ import Experts from './Pages/Experts.jsx'
 import BusinessDemandPostForm from './Pages/BusinessDemandPostForm.jsx'
 import ProductionPostCreate from './Pages/ProductionPostCreate.jsx'
 import AIHelper from './Pages/AIHelper.jsx'
+import About from './Pages/About.jsx'
+import Contact from './Pages/Contact.jsx'
+import Home from './Pages/Home.jsx'
 
 function App() {
 
@@ -29,9 +32,11 @@ function App() {
         <BrowserRouter>
 
           <Routes>
-            <Route path="/" element={<Navigate to="/dashboard" />} />
+            <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Registeration />} />
+            <Route path="about" element={<About />} />
+            <Route path="contact" element={<Contact />} />
 
             <Route path="/dashboard" element={<Dashboard />}>
               <Route index element={<Navigate to="production-posts" />} />
@@ -48,6 +53,7 @@ function App() {
               <Route path="create-new-businessdemand" element={<BusinessDemandPostForm />} />
               <Route path="create-new-production-post" element={<ProductionPostCreate />} />
               <Route path="ai-helper" element={<AIHelper />} />
+
             </Route>
             <Route path="*" element={<Navigate to="/dashboard" />} />
           </Routes>
