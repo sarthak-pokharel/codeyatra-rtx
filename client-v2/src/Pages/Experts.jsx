@@ -2,8 +2,29 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { _hostname } from '../apiRoutes';
 import ExpertForm from './ExpertCreationForm';
-import { Container, Typography, List, ListItem, ListItemText, Button, CircularProgress, Alert, Fab } from '@mui/material';
+import { Container, Typography, List, ListItem, ListItemText, CircularProgress, Alert, Fab, Card, CardContent, CardActions, Button } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
+import { styled } from '@mui/system';
+
+const StyledCard = styled(Card)({
+  marginBottom: '20px',
+  border: '1px solid #ddd',
+  transition: 'transform 0.3s',
+  '&:hover': {
+    transform: 'scale(1.05)',
+    borderColor: '#3f51b5',
+  },
+});
+
+const StyledFab = styled(Fab)({
+  position: 'fixed',
+  bottom: '20px',
+  right: '20px',
+  backgroundColor: '#3f51b5',
+  '&:hover': {
+    backgroundColor: '#303f9f',
+  },
+});
 
 export default function Experts() {
   const [experts, setExperts] = useState([]);
@@ -75,36 +96,34 @@ export default function Experts() {
       </Typography>
       <List>
         {experts.map((expert) => (
-          <ListItem key={expert.id}>
-            <ListItemText
-              primary={expert.title}
-              secondary={
-                <>
-                  <Typography component="span" variant="body2" color="textPrimary">
-                    {expert.services}
-                  </Typography>
-                  <br />
-                  {expert.description}
-                  <br />
-                  Created by: {expert.first_name} {expert.last_name}
-                </>
-              }
-            />
-          </ListItem>
+          <StyledCard key={expert.id}>
+            <CardContent>
+              <Typography variant="h5" component="div">
+                {expert.title}
+              </Typography>
+              <Typography variant="body2" color="textSecondary">
+                {expert.services}
+              </Typography>
+              <Typography variant="body1" component="p">
+                {expert.description}
+              </Typography>
+              <Typography variant="caption" color="textSecondary">
+                Created by: {expert.first_name} {expert.last_name}
+              </Typography>
+            </CardContent>
+            <CardActions>
+              <Button size="small" color="primary">Learn More</Button>
+            </CardActions>
+          </StyledCard>
         ))}
       </List>
-      <Fab
+      <StyledFab
         color="primary"
         aria-label="add"
-        style={{
-          position: 'fixed',
-          bottom: '20px',
-          right: '20px'
-        }}
         onClick={() => setShowForm(true)}
       >
         <AddIcon />
-      </Fab>
+      </StyledFab>
       {showForm && (
         <ExpertForm
           formData={formData}
