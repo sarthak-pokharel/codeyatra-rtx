@@ -17,6 +17,7 @@ import { UserContext, UserProvider } from "./Pages/Contexts/UserContext.jsx";
 import Profile from './Profile.jsx'
 import Experts from './Pages/Experts.jsx'
 import BusinessDemandPostForm from './Pages/BusinessDemandPostForm.jsx'
+import ProductionPostCreate from './Pages/ProductionPostCreate.jsx'
 
 function App() {
 
@@ -44,6 +45,7 @@ function App() {
               <Route path="experts" element={<Navigate to="experts/profile" />} />
               <Route path="experts-list" element={<Experts />} />
               <Route path="create-new-businessdemand" element={<BusinessDemandPostForm />} />
+              <Route path="create-new-production-post" element={<ProductionPostCreate />} />
             </Route>
             <Route path="*" element={<Navigate to="/dashboard" />} />
           </Routes>

@@ -198,13 +198,14 @@ router.put('/edit-user/:id', (req, res) => {
 
 
 
-router.post('/new-production-info', (req, res) => {
-  const { created_by, item_label, description, quantity_per_month, costing_per_month } = req.body;
+router.post('/new-production-info', verifyToken, (req, res) => {
+  const { item_label, description, quantity_per_month, costing_per_month, district } = req.body;
+  const created_by = req.userId; // Get user ID from verified token
 
   // Input validation
-  if (!created_by || !item_label || !description || !quantity_per_month || !costing_per_month) {
+  if (!item_label || !description || !quantity_per_month || !costing_per_month || !district) {
     return res.status(400).json({
-      error: 'All fields (created_by, item_label, description, quantity_per_month, costing_per_month) are required'
+      error: 'All fields (item_label, description, quantity_per_month, costing_per_month, district) are required'
     });
   }
 
@@ -218,6 +219,12 @@ router.post('/new-production-info', (req, res) => {
   if (description.length > 2000) {
     return res.status(400).json({
       error: 'Description must not exceed 2000 characters'
+    });
+  }
+
+  if (district.length > 100) {
+    return res.status(400).json({
+      error: 'District must not exceed 100 characters'
     });
   }
 
@@ -235,12 +242,12 @@ router.post('/new-production-info', (req, res) => {
   }
 
   const query = `
-    INSERT INTO production_info (created_by, item_label, description, quantity_per_month, costing_per_month)
-    VALUES (?, ?, ?, ?, ?)
+    INSERT INTO production_info (created_by, item_label, description, quantity_per_month, costing_per_month, district)
+    VALUES (?, ?, ?, ?, ?, ?)
   `;
 
   connection.query(query,
-    [created_by, item_label, description, quantity_per_month, costing_per_month],
+    [created_by, item_label, description, quantity_per_month, costing_per_month, district],
     (err, results) => {
       if (err) {
         if (err.code === 'ER_NO_REFERENCED_ROW_2') {

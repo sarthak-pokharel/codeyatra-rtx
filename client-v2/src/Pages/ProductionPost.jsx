@@ -8,9 +8,11 @@ import {
   CircularProgress,
   Box,
   Button,
-  Divider
+  Divider,
+  Fab
 } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import AddIcon from '@mui/icons-material/Add';
 
 export default function ProductionPost() {
   const { id } = useParams();
@@ -102,6 +104,7 @@ export default function ProductionPost() {
           </Typography>
         </CardContent>
       </Card>
+      
     </Container>
   );
 }

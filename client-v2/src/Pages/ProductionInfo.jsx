@@ -6,13 +6,16 @@ import {
   CardContent,
   Grid2 as Grid,
   CircularProgress,
-  Box
+  Box,
+  Fab,
+  Divider
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { getRelativeTimeString } from './toolkit';
 import { productionInfoRoute } from '../apiRoutes';
 import ProductionSearchFilters from './ProductionSearchFilter';
 // import ProductionSearchFilters from '../components/ProductionSearchFilters';
+import AddIcon from '@mui/icons-material/Add';
 
 export default function ProductionInfo() {
   const navigate = useNavigate();
@@ -65,6 +68,9 @@ export default function ProductionInfo() {
       </Box>
     );
   }
+  const handleCardClick = (id) => {
+    navigate(`/dashboard/production-posts/${id}`);
+  };
 
   if (error) {
     return (
@@ -186,6 +192,18 @@ export default function ProductionInfo() {
           ))
         )}
       </Grid>
+      <Fab
+        color="primary"
+        aria-label="add production post"
+        onClick={() => navigate('/dashboard/create-new-production-post')}
+        sx={{
+          position: 'fixed',
+          bottom: 16,
+          right: 16
+        }}
+      >
+        <AddIcon />
+      </Fab>
     </Container>
   );
 }
