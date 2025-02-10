@@ -7,22 +7,31 @@ CREATE TABLE `business_demand` (
   `created_by` int(11) NOT NULL,
   `item_name` varchar(200) NOT NULL,
   `quantity_per_month` int(5) NOT NULL COMMENT 'Ammount needed, per month. in kg. ',
-  `description` varchar(1000) NOT NULL
+  `description` varchar(1000) NOT NULL,
+  `posted_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE `expert_profile` (
   `id` int(11) NOT NULL,
   `created_by` int(11) NOT NULL,
-  `title` int(200) NOT NULL,
+  `title` varchar(200) NOT NULL,
   `services` varchar(300) NOT NULL,
   `description` varchar(2000) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE `otp_verification` (
+  `id` int(11) NOT NULL,
+  `phone_number` varchar(30) NOT NULL,
+  `otp` int(11) NOT NULL,
+  `expires_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `used` tinyint(1) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE `posts` (
   `id` int(11) NOT NULL,
   `created_by` int(11) NOT NULL,
-  `title` int(11) NOT NULL,
-  `description` int(11) NOT NULL,
+  `title` varchar(200) NOT NULL,
+  `description` varchar(2500) NOT NULL,
   `keywords` varchar(500) NOT NULL,
   `posted_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -40,8 +49,9 @@ CREATE TABLE `production_info` (
   `created_by` int(11) NOT NULL,
   `item_label` varchar(200) NOT NULL,
   `description` varchar(2000) NOT NULL,
-  `quantity_per_month` int(11) NOT NULL,
-  `costing_per_month` int(11) NOT NULL
+  `quantity_per_month` int(11) NOT NULL COMMENT 'in kg',
+  `costing_per_month` int(11) NOT NULL COMMENT 'in NPR',
+  `posted_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE `users` (
@@ -53,7 +63,8 @@ CREATE TABLE `users` (
   `last_name` varchar(40) DEFAULT NULL,
   `gender` varchar(20) DEFAULT NULL,
   `contact_email` varchar(255) DEFAULT NULL,
-  `location_raw` varchar(500) DEFAULT NULL
+  `location_raw` varchar(500) DEFAULT NULL,
+  `pfp` longblob DEFAULT NULL COMMENT 'Profile Picture'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 
@@ -64,6 +75,9 @@ ALTER TABLE `business_demand`
 ALTER TABLE `expert_profile`
   ADD PRIMARY KEY (`id`),
   ADD KEY `created_by` (`created_by`);
+
+ALTER TABLE `otp_verification`
+  ADD PRIMARY KEY (`id`);
 
 ALTER TABLE `posts`
   ADD PRIMARY KEY (`id`),
@@ -87,6 +101,9 @@ ALTER TABLE `business_demand`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 ALTER TABLE `expert_profile`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE `otp_verification`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 ALTER TABLE `posts`
