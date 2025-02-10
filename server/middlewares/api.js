@@ -197,63 +197,6 @@ router.put('/edit-user/:id', (req, res) => {
 });
 
 
-router.post('/new-business-demand', (req, res) => {
-  const { created_by, item_name, quantity_per_month, description } = req.body;
-
-  // Input validation
-  if (!created_by || !item_name || !quantity_per_month || !description) {
-    return res.status(400).json({
-      error: 'All fields (created_by, item_name, quantity_per_month, description) are required'
-    });
-  }
-
-  // Validate quantity is a positive number
-  if (!Number.isInteger(quantity_per_month) || quantity_per_month <= 0) {
-    return res.status(400).json({
-      error: 'Quantity per month must be a positive integer'
-    });
-  }
-
-  // Validate string lengths according to schema
-  if (item_name.length > 200) {
-    return res.status(400).json({
-      error: 'Item name must not exceed 200 characters'
-    });
-  }
-
-  if (description.length > 1000) {
-    return res.status(400).json({
-      error: 'Description must not exceed 1000 characters'
-    });
-  }
-
-  const query = `
-    INSERT INTO business_demand (created_by, item_name, quantity_per_month, description)
-    VALUES (?, ?, ?, ?)
-  `;
-
-  connection.query(query,
-    [created_by, item_name, quantity_per_month, description],
-    (err, results) => {
-      if (err) {
-        if (err.code === 'ER_NO_REFERENCED_ROW_2') {
-          return res.status(400).json({
-            error: 'Invalid user ID provided'
-          });
-        }
-        console.error('Error inserting business demand:', err);
-        return res.status(500).json({
-          error: 'Internal Server Error'
-        });
-      }
-      res.status(201).json({
-        message: 'Business demand created successfully',
-        demandId: results.insertId
-      });
-    }
-  );
-});
-
 
 router.post('/new-production-info', (req, res) => {
   const { created_by, item_label, description, quantity_per_month, costing_per_month } = req.body;
@@ -599,6 +542,70 @@ router.get('/business-demands/:id', (req, res) => {
       data: results[0]
     });
   });
+});
+
+router.post('/new-business-demand', verifyToken, (req, res) => {
+  const { item_name, quantity_per_month, description, district } = req.body;
+  const created_by = req.userId; // Extracted from the verified token
+console.log({district});
+  // Input validation
+  if (!created_by || !item_name || !quantity_per_month || !description || !district) {
+    return res.status(400).json({
+      error: 'All fields (item_name, quantity_per_month, description, district) are required'
+    });
+  }
+
+  // Validate string lengths according to schema
+  if (item_name.length > 200) {
+    return res.status(400).json({
+      error: 'Item name must not exceed 200 characters'
+    });
+  }
+
+  if (description.length > 1000) {
+    return res.status(400).json({
+      error: 'Description must not exceed 1000 characters'
+    });
+  }
+
+  if (district.length > 100) {
+    return res.status(400).json({
+      error: 'District must not exceed 100 characters'
+    });
+  }
+
+  // Validate quantity is a positive integer
+  if (!Number.isInteger(quantity_per_month) || quantity_per_month <= 0) {
+    return res.status(400).json({
+      error: 'Quantity per month must be a positive integer'
+    });
+  }
+
+  const query = `
+    INSERT INTO business_demand (created_by, item_name, quantity_per_month, description, district)
+    VALUES (?, ?, ?, ?, ?)
+  `;
+
+  connection.query(query,
+    [created_by, item_name, quantity_per_month, description, district],
+    (err, results) => {
+      if (err) {
+        if (err.code === 'ER_NO_REFERENCED_ROW_2') {
+          return res.status(400).json({
+            error: 'Invalid user ID provided'
+          });
+        }
+        console.error('Error creating business demand:', err);
+        return res.status(500).json({
+          error: 'Internal Server Error'
+        });
+      }
+      res.status(201).json({
+        message: 'Business demand created successfully',
+        demandId: results.insertId
+      });
+    }
+  );
 });
 
 router.get('/expert-profiles', (req, res) => {

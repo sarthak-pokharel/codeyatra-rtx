@@ -86,7 +86,7 @@ const Profile = () => {
     const nonEditableFields = ['id', 'contact_num', 'country_code'];
 
     return (
-        <Container>
+        <Container maxWidth="sm">
             <Typography variant="h4" gutterBottom>
                 Profile
             </Typography>

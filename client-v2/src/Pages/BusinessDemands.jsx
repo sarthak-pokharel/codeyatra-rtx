@@ -8,11 +8,16 @@ import {
   CircularProgress,
   Box,
   TextField,
-  Button
+  Button,
+  Fab
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { businessDemandsRoute } from '../apiRoutes';
 import { getRelativeTimeString } from './toolkit';
+import AddIcon from '@mui/icons-material/Add'; // Add this import
+import { districts } from './districts';
+import { MenuItem, Select, InputLabel, FormControl } from '@mui/material';
+
 
 export default function BusinessDemands() {
   const navigate = useNavigate();
@@ -22,6 +27,7 @@ export default function BusinessDemands() {
   const [searchTerm, setSearchTerm] = useState('');
   const [minQuantity, setMinQuantity] = useState('');
   const [maxQuantity, setMaxQuantity] = useState('');
+  const [district, setDistrict] = useState('');
 
   const [searchTrigger, setSearchTrigger] = useState(0);
 
@@ -32,7 +38,8 @@ export default function BusinessDemands() {
         const queryParams = new URLSearchParams({
           search_term: searchTerm,
           min_quantity: minQuantity,
-          max_quantity: maxQuantity
+          max_quantity: maxQuantity,
+          district: district
         }).toString();
         const response = await fetch(`${businessDemandsRoute}?${queryParams}`);
         if (!response.ok) {
@@ -105,21 +112,41 @@ export default function BusinessDemands() {
           onChange={(e) => setMaxQuantity(e.target.value)}
           sx={{ mr: 2 }}
         />
-        <Button variant="contained" onClick={handleSearch} size='large' sx={{height: '50px'}}>
+        <FormControl sx={{ mr: 2, minWidth: 200 }}>
+  <InputLabel>District</InputLabel>
+  <Select
+    value={district}
+    label="District"
+    onChange={(e) => setDistrict(e.target.value)}
+  >
+    <MenuItem value="">
+      <em>All Districts</em>
+    </MenuItem>
+    {districts.map((dist) => (
+      <MenuItem key={dist} value={dist}>
+        {dist}
+      </MenuItem>
+    ))}
+  </Select>
+</FormControl>
+        <Button variant="contained" onClick={handleSearch} size='large' sx={{ height: '50px' }}>
           Search
         </Button>
       </Box>
-      <Grid container spacing={2}>
+      <Grid container spacing={1} sx={{ width: '100%' }}>
         {demands.map((item) => (
-          <Grid item xs={12} key={item.id}>
+          <Grid item xs={12} key={item.id} sx={{ width: '100%' }}>
             <Card
               sx={{
                 cursor: 'pointer',
+                width: '100%',
+                minWidth: '100%',
+                display: 'block',
                 '&:hover': {
                   boxShadow: 3,
                   borderLeft: '4px solid #1976d2',
                   transition: 'all 0.2s ease-in-out'
-                }
+                },
               }}
               onClick={() => handleCardClick(item.id)}
             >
@@ -163,6 +190,25 @@ export default function BusinessDemands() {
                   <Typography variant="caption" color="text.secondary">
                     Posted by: {item.first_name} {item.last_name}
                   </Typography>
+                  {item.district && (
+      <>
+        <Typography variant="caption" color="text.secondary">•</Typography>
+        <Typography 
+          variant="caption" 
+          color="primary"
+          sx={{ 
+            backgroundColor: 'primary.50',
+            px: 1,
+            py: 0.25,
+            borderRadius: 1,
+            fontSize: '0.75rem',
+            textTransform: 'uppercase'
+          }}
+        >
+          {item.district}
+        </Typography>
+      </>
+    )}
                   <Typography variant="caption" color="text.secondary" sx={{ ml: 2 }}>
                     {getRelativeTimeString(item.posted_at)}
                   </Typography>
@@ -172,6 +218,22 @@ export default function BusinessDemands() {
           </Grid>
         ))}
       </Grid>
+      <Fab
+        color="primary"
+        aria-label="add"
+        onClick={() => navigate('/dashboard/create-new-businessdemand')}
+        sx={{
+          position: 'fixed',
+          bottom: 24,
+          right: 24,
+          '&:hover': {
+            transform: 'scale(1.05)'
+          },
+          transition: 'transform 0.2s'
+        }}
+      >
+        <AddIcon />
+      </Fab>
     </Container>
   );
 }
