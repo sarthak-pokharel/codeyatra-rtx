@@ -21,6 +21,7 @@ export default function ProductionInfo() {
   const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [district, setDistrict] = useState(''); // Add this state
+  const [serarchTrigger, setSearchTrigger] = useState(0);
 
   const fetchProductionInfo = async (params = {}) => {
     try {
@@ -47,7 +48,7 @@ export default function ProductionInfo() {
       params.district = district;
     }
     fetchProductionInfo(params);
-  }, [searchTerm, district]); // Add district to dependency array
+  }, [serarchTrigger, district]); // Add district to dependency array
 
   const handleSearch = (value) => {
     setSearchTerm(value);
@@ -87,6 +88,7 @@ export default function ProductionInfo() {
         onSearch={handleSearch}
         district={district}
         onDistrictChange={handleDistrictChange}
+        setSearchTrigger={setSearchTrigger}
       />
 
       <Grid container spacing={2}>

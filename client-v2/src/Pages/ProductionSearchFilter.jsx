@@ -1,4 +1,4 @@
-import { Box, TextField, InputAdornment, IconButton, MenuItem } from '@mui/material';
+import { Box, TextField, InputAdornment, IconButton, MenuItem, Button } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 
 // Nepal districts list
@@ -16,15 +16,31 @@ const districts = [
   "Sunsari", "Surkhet", "Syangja", "Tanahu", "Taplejung", "Terhathum", "Udayapur"
 ];
 
-export default function ProductionSearchFilters({ onSearch, searchTerm, onDistrictChange, district }) {
+
+export default function ProductionSearchFilters({ 
+  onSearch, 
+  searchTerm, 
+  onDistrictChange, 
+  district,
+  setSearchTrigger,
+  isSearching = false // Add this prop
+}) {
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    onSearch(searchTerm); // This will now trigger the API call
+  };
   return (
-    <Box sx={{ mb: 3, display: 'flex', gap: 2, alignItems: 'center' }}>
+    <Box 
+      component="form" 
+      onSubmit={handleSubmit}
+      sx={{ mb: 3, display: 'flex', gap: 2, alignItems: 'center' }}
+    >
       <TextField
         sx={{ flex: 2 }}
         variant="outlined"
         placeholder="Search by item name or description..."
         value={searchTerm}
-        onChange={(e) => onSearch(e.target.value)}
+        onChange={(e) => onSearch(e.target.value, false)} // Pass false to indicate this is not a final search
         InputProps={{
           startAdornment: (
             <InputAdornment position="start">
@@ -48,6 +64,16 @@ export default function ProductionSearchFilters({ onSearch, searchTerm, onDistri
           </MenuItem>
         ))}
       </TextField>
+      <Button
+      sx={{ height: "46px"}} 
+        variant="contained" 
+        type="submit"
+        disabled={isSearching}
+        startIcon={<SearchIcon />}
+        onClick={() => setSearchTrigger(Math.random())}
+      >
+        Search
+      </Button>
     </Box>
   );
 }
