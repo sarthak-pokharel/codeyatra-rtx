@@ -628,6 +628,48 @@ router.get('/expert-profiles', (req, res) => {
 });
 
 
+router.get('/production-stats', (req, res) => {
+  const { limit = 10 } = req.query; // Default to top 10 items
+
+  const query = `
+    SELECT 
+      p.item_label,
+      COUNT(DISTINCT p.id) as producer_count,
+      SUM(p.quantity_per_month) as total_monthly_quantity,
+      AVG(p.costing_per_month) as avg_monthly_cost,
+      GROUP_CONCAT(DISTINCT p.district) as producing_districts
+    FROM production_info p
+    GROUP BY p.item_label
+    ORDER BY total_monthly_quantity DESC
+    LIMIT ?
+  `;
+
+  connection.query(query, [parseInt(limit)], (err, results) => {
+    if (err) {
+      console.error('Error generating production stats:', err);
+      return res.status(500).json({
+        error: 'Internal Server Error'
+      });
+    }
+
+    // Process results to add ranking and format data
+    const statsWithRanking = results.map((item, index) => ({
+      rank: index + 1,
+      item_name: item.item_label,
+      total_monthly_demand: item.total_monthly_quantity,
+      producer_count: item.producer_count,
+      avg_monthly_cost: Math.round(item.avg_monthly_cost), // Round to nearest integer
+      producing_districts: item.producing_districts.split(',').filter((v, i, a) => a.indexOf(v) === i) // Remove duplicates
+    }));
+
+    res.json({
+      message: 'Production statistics retrieved successfully',
+      count: results.length,
+      data: statsWithRanking
+    });
+  });
+});
+
 router.post('/create-new-post', (req, res) => {
   const { created_by, title, description, keywords } = req.body;
 
